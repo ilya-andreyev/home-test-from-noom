@@ -17,6 +17,9 @@ class SleepLog(models.Model):
     )
 
 class SleepLogSerializer(serializers.ModelSerializer):
+    bedTimeStart = serializers.DateTimeField(source='bed_time_start')
+    bedTimeEnd = serializers.DateTimeField(source='bed_time_end')
+
     class Meta:
         model = SleepLog
-        fields = ["id", "feeling", "bed_time_start", "bed_time_end"]
+        fields = ["id", "feeling", "bedTimeStart", "bedTimeEnd"]

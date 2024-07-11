@@ -1,7 +1,10 @@
+import { SleepQuality } from "../../enums";
+import { ISO8601String } from "../../types";
+
 export interface ILastNightSleep {
-  feeling: number;
-  bed_time_start: string;
-  bed_time_end: string;
+  feeling: SleepQuality;
+  bedTimeStart: ISO8601String;
+  bedTimeEnd: ISO8601String;
 }
 
 export interface ILastNightSleepSlice {
