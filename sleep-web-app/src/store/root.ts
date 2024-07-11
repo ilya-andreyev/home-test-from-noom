@@ -1,10 +1,8 @@
 import type { PreloadedState } from "@reduxjs/toolkit";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import authReducer from "./auth/slice";
 import lastNightSleepReducer from "./lastNightSleep/slice";
 
 const rootReducer = combineReducers({
-  auth: authReducer,
   lastNightSleep: lastNightSleepReducer
 });
 

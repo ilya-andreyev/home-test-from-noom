@@ -12,5 +12,6 @@
   "trailingComma": "none",
   "editor.formatOnSave": true,
   "html.format.wrapLineLength": 80,
-  "html.format.wrapAttributes": "force-expand-multiline"
+  "html.format.wrapAttributes": "force-expand-multiline",
+  "endOfLine": "auto"
 }

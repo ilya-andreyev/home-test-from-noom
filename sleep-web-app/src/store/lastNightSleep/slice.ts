@@ -7,7 +7,7 @@ export const lastNightSleepSlice = createSlice({
   name: "lastNightSleep",
   initialState,
   reducers: {
-    setData: (state, action: PayloadAction<ILastNightSleep>) => {
+    setData: (state, action: PayloadAction<ILastNightSleep | null>) => {
       state.data = action.payload;
     },
     setIsLoading: (state, action: PayloadAction<boolean>) => {

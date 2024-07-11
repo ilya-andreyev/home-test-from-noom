@@ -5,18 +5,17 @@ import { lastNightSleepActions } from "./slice";
 
 export const getLastNightSleep = createAsyncThunk<
   void,
-  string,
+  void,
   { state: RootState }
->("lastNightSleep/getData", async (lastNightDate, { dispatch }) => {
+>("lastNightSleep/getData", async (_, { dispatch }) => {
   dispatch(lastNightSleepActions.setIsLoading(true));
 
   try {
-    const lastNightSleepData =
-      await sleepService.getLastNightSleepData(lastNightDate);
+    const lastNightSleepData = await sleepService.getLastNightSleepData();
 
     dispatch(lastNightSleepActions.setData(lastNightSleepData));
   } catch (error: any) {
-    console.log(error);
+    console.error(error);
   } finally {
     dispatch(lastNightSleepActions.setIsLoading(false));
   }
