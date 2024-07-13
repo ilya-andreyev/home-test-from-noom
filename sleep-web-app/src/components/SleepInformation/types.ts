@@ -1,5 +1,5 @@
-import { ILastNightSleep } from "../../store/lastNightSleep/types";
+import { ISleepData } from "../../store/sleep/types";
 
-export interface SleepInformationProperties {
-  lastNightSleepData: ILastNightSleep;
+export interface ISleepInformationProperties {
+  lastNightSleepData: ISleepData;
 }

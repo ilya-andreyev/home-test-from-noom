@@ -1,11 +1,10 @@
 import { useEffect } from "react";
-import { Box } from "@chakra-ui/react";
-import { getLastNightSleep } from "../../store/lastNightSleep/thunks";
+import { getLastNightSleep } from "../../store/sleep/thunks";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import {
   selectLastNightSleepData,
   selectLastNightSleepLoading
-} from "../../store/lastNightSleep/selectors";
+} from "../../store/sleep/selectors";
 import { NoSleepInformation } from "../../components/NoSleepInformation";
 import { SleepInformation } from "../../components/SleepInformation";
 import { Loading } from "../../components/Loading";
@@ -23,13 +22,9 @@ export function IndexPage() {
     return <Loading />;
   }
 
-  return (
-    <Box mt={16}>
-      {lastNightSleepData ? (
-        <SleepInformation lastNightSleepData={lastNightSleepData} />
-      ) : (
-        <NoSleepInformation />
-      )}
-    </Box>
-  );
+  if (lastNightSleepData) {
+    return <SleepInformation lastNightSleepData={lastNightSleepData} />;
+  }
+
+  return <NoSleepInformation />;
 }
