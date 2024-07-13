@@ -1,12 +1,12 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { SleepWidget } from "../SleepWidget";
-import { SleepInformationProperties } from "./types";
+import { ISleepInformationProperties } from "./types";
 import { formatDate, getDuration, getInterval } from "../../utils";
 import { sleepQualityLabels, sleepQualityColors } from "../../enums";
 
 export function SleepInformation({
   lastNightSleepData
-}: SleepInformationProperties) {
+}: ISleepInformationProperties) {
   const { feeling, bedTimeStart, bedTimeEnd } = lastNightSleepData;
 
   const lastNightDate = formatDate(bedTimeEnd, "LLLL, do");
@@ -24,7 +24,7 @@ export function SleepInformation({
         height="100%"
       >
         <Text>{lastNightDate}</Text>
-        <Text fontSize="xl" fontWeight="bold">
+        <Text fontSize="xl" fontWeight="bold" textAlign="center">
           {sleepDuration}
         </Text>
         <Text>{sleepInterval}</Text>

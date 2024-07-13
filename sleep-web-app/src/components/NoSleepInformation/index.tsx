@@ -1,18 +1,8 @@
-import {
-  Flex,
-  Text,
-  IconButton,
-  Box,
-  Button,
-  useDisclosure,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton
-} from "@chakra-ui/react";
+import { Flex, Text, IconButton, useDisclosure } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
 import { SleepWidget } from "../SleepWidget";
 import { Modal } from "../Modal";
+import { LogSleepInformationForm } from "./LogSleepInformationForm";
 
 export function NoSleepInformation() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -41,21 +31,10 @@ export function NoSleepInformation() {
           isOpen={isOpen}
           onOpen={onOpen}
           onClose={onClose}
+          title="Log sleep information"
+          closeOnOverlayClick={false}
         >
-          <ModalHeader>Modal Title</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Box>
-              This is a sample modal with custom animation using Framer Motion
-              and Chakra UI.
-            </Box>
-          </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
-            </Button>
-            <Button variant="ghost">Secondary Action</Button>
-          </ModalFooter>
+          <LogSleepInformationForm onClose={onClose} />
         </Modal>
       </Flex>
     </SleepWidget>

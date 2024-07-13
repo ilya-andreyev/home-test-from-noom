@@ -1,9 +1,10 @@
 import { Route, Navigate, Routes } from "react-router-dom";
 import { ChakraProvider } from "@chakra-ui/react";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import { NotFoundPage } from "../pages/404";
 import { IndexPage } from "../pages/IndexPage";
-
 import { Layout } from "./Layout";
 
 const NOT_FOUND_ROUTE = "/404/";
@@ -18,6 +19,7 @@ export default function App() {
           <Route path="*" element={<Navigate to={NOT_FOUND_ROUTE} />} />
         </Route>
       </Routes>
+      <ToastContainer />
     </ChakraProvider>
   );
 }

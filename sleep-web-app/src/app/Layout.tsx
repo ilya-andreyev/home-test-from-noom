@@ -6,7 +6,7 @@ export function Layout() {
   return (
     <Box>
       <Navbar />
-      <Container centerContent>
+      <Container centerContent mt={16}>
         <Outlet />
       </Container>
     </Box>

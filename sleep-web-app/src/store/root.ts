@@ -1,9 +1,9 @@
 import type { PreloadedState } from "@reduxjs/toolkit";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import lastNightSleepReducer from "./lastNightSleep/slice";
+import sleepReducer from "./sleep/slice";
 
 const rootReducer = combineReducers({
-  lastNightSleep: lastNightSleepReducer
+  sleep: sleepReducer
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
