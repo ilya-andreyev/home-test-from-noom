@@ -24,5 +24,6 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/login", auth_views.obtain_auth_token),
     path("api/ping", views.ping, name="ping"),
-    path("api/sleep-log", views.SleepLogView.as_view(), name="sleeplog")
+    path("api/sleep-log", views.SleepLogView.as_view(), name="sleeplog"),
+    path("api/sleep-log/last-30-days", views.SleepLogLast30DaysView.as_view(), name="sleeplog_last_30_days"),
 ]
