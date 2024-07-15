@@ -1,7 +1,7 @@
 import json
-from datetime import datetime, timedelta, timezone
-from django.utils import timezone as django_timezone
-from django.db.models import Avg, Count, F, ExpressionWrapper, DurationField, Func
+from datetime import timedelta
+from django.utils import timezone
+from django.db.models import Avg, Count, F, ExpressionWrapper, DurationField
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated 
@@ -14,10 +14,6 @@ from .validation import parse_and_validate_datetime, validate_feeling_field, val
 @api_view(['GET'])
 def ping(request):
     return Response("pong")
-
-class ExtractEpoch(Func):
-    function = 'EXTRACT'
-    template = "%(function)s(EPOCH FROM %(expressions)s)"
 
 class SleepLogView(APIView):
     permission_classes = [IsAuthenticated]
@@ -67,62 +63,40 @@ class SleepLogLast30DaysView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
-        end_date = django_timezone.now()
+        end_date = timezone.now().replace(hour=23, minute=59, second=59, microsecond=999999)
         start_date = end_date - timedelta(days=30)
         sleep_logs = SleepLog.objects.filter(
             bed_time_end__range=[start_date, end_date],
             user_id=request.user.id
         ).order_by('-bed_time_end')
 
-        # Serialize the sleep logs
+        if not sleep_logs.exists():
+            return JsonResponse(None, safe=False)
+
         serialized_objs = SleepLogSerializer(sleep_logs, many=True).data
 
-        # Calculate the average total time in bed
         sleep_logs_with_duration = sleep_logs.annotate(
             duration=ExpressionWrapper(F('bed_time_end') - F('bed_time_start'), output_field=DurationField())
         )
         average_total_time_in_ISO_8601_format = sleep_logs_with_duration.aggregate(Avg('duration'))['duration__avg']
 
         if average_total_time_in_ISO_8601_format:
-            total_seconds = int(average_total_time_in_ISO_8601_format.total_seconds())
-            hours = total_seconds // 3600
-            minutes = (total_seconds % 3600) // 60
-            average_total_time_in_bed = {'hours': int(hours), 'minutes': int(minutes)}
+            average_total_time_in_bed_seconds = int(average_total_time_in_ISO_8601_format.total_seconds())
         else:
-            average_total_time_in_bed = {'hours': 0, 'minutes': 0}
+            average_total_time_in_bed_seconds = 0
 
-        # Calculate the average bed time start and end
-        avg_bed_time_start_epoch = sleep_logs.annotate(
-            bed_time_start_epoch=ExtractEpoch(F('bed_time_start'))
-        ).aggregate(avg_bed_time_start=Avg('bed_time_start_epoch'))['avg_bed_time_start']
-
-        avg_bed_time_end_epoch = sleep_logs.annotate(
-            bed_time_end_epoch=ExtractEpoch(F('bed_time_end'))
-        ).aggregate(avg_bed_time_end=Avg('bed_time_end_epoch'))['avg_bed_time_end']
-
-        # Convert the average epoch seconds back to a 12-hour format with AM/PM
-        def epoch_seconds_to_12_hour_format(seconds):
-            time = datetime.fromtimestamp(seconds, tz=timezone.utc)
-            return time.strftime("%I:%M %p").lstrip('0')
-
-        avg_bed_time_start = epoch_seconds_to_12_hour_format(avg_bed_time_start_epoch) if avg_bed_time_start_epoch else "12:00 AM"
-        avg_bed_time_end = epoch_seconds_to_12_hour_format(avg_bed_time_end_epoch) if avg_bed_time_end_epoch else "12:00 AM"
-
-        # Calculate the feeling frequencies
         feeling_frequencies = sleep_logs.values('feeling').annotate(count=Count('feeling')).order_by('feeling')
         feeling_counts = {
-            "Bad": next((item['count'] for item in feeling_frequencies if item['feeling'] == 1), 0),
-            "Ok": next((item['count'] for item in feeling_frequencies if item['feeling'] == 2), 0),
-            "Good": next((item['count'] for item in feeling_frequencies if item['feeling'] == 3), 0),
+            "1": next((item['count'] for item in feeling_frequencies if item['feeling'] == 1), 0),
+            "2": next((item['count'] for item in feeling_frequencies if item['feeling'] == 2), 0),
+            "3": next((item['count'] for item in feeling_frequencies if item['feeling'] == 3), 0),
         }
 
         response_data = {
-            "sleep_logs": serialized_objs,
-            "average_total_time_in_bed": average_total_time_in_bed,
-            "date_range": {"start": start_date.date(), "end": end_date.date()},
-            "average_bed_time_start": avg_bed_time_start,
-            "average_bed_time_end": avg_bed_time_end,
-            "feeling_frequencies": feeling_counts
+            "sleepLogs": serialized_objs,
+            "averageTotalTimeInBedSeconds": average_total_time_in_bed_seconds,
+            "dateRange": {"start": start_date.date(), "end": end_date.date()},
+            "feelingFrequencies": feeling_counts
         }
 
         return JsonResponse(response_data, safe=False)

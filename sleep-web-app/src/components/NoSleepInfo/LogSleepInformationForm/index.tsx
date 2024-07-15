@@ -1,11 +1,15 @@
 import { ModalBody, ModalFooter, Button } from "@chakra-ui/react";
 import { FormikProvider, FormikHelpers, useFormik } from "formik";
-import { format } from "date-fns";
-import { getLastNightSleep, saveSleep } from "../../../store/sleep/thunks";
+import { format, subDays } from "date-fns";
+import {
+  getLastNightSleep,
+  getLast30NightsSleep,
+  saveSleep
+} from "../../../store/sleep/thunks";
 import { useAppDispatch } from "../../../store/hooks";
 import {
   FEELING_OPTIONS,
-  initialValues,
+  getDefaultValues,
   SLEEP_LOG_SUCCESS_MESSAGE
 } from "./constant";
 import {
@@ -26,9 +30,10 @@ export function LogSleepInformationForm({
     actions: FormikHelpers<ILogSleepInformationForm>
   ) => {
     notifySuccess(SLEEP_LOG_SUCCESS_MESSAGE);
-    actions.resetForm({ values: initialValues, isSubmitting: false });
+    actions.resetForm({ values: getDefaultValues(), isSubmitting: false });
     onClose();
     dispatch(getLastNightSleep());
+    dispatch(getLast30NightsSleep());
   };
 
   const onSubmit = (
@@ -48,16 +53,17 @@ export function LogSleepInformationForm({
   };
 
   const formik = useFormik<ILogSleepInformationForm>({
-    initialValues,
+    initialValues: getDefaultValues(),
     onSubmit,
     validationSchema
   });
 
-  const { handleSubmit, isSubmitting, values } = formik;
+  const { handleSubmit, isSubmitting } = formik;
 
-  const currentDate = format(new Date(), "yyyy-MM-dd'T'HH:mm");
-  const maxBedTimeStartDate =
-    values[LogSleepInformationFormFields.BED_TIME_END] || currentDate;
+  const currentDate = new Date();
+  const dayBefore = subDays(currentDate, 1);
+  const formattedCurrentDate = format(currentDate, "yyyy-MM-dd'T'HH:mm");
+  const formattedDayBefore = format(dayBefore, "yyyy-MM-dd'T'HH:mm");
 
   return (
     <FormikProvider value={formik}>
@@ -66,14 +72,15 @@ export function LogSleepInformationForm({
           <DateField
             name={LogSleepInformationFormFields.BED_TIME_START}
             label="Bedtime start"
-            maxDate={maxBedTimeStartDate}
+            minDate={formattedDayBefore}
+            maxDate={formattedCurrentDate}
             disabled={isSubmitting}
           />
           <DateField
             name={LogSleepInformationFormFields.BED_TIME_END}
             label="Bedtime end"
-            minDate={values[LogSleepInformationFormFields.BED_TIME_START]}
-            maxDate={currentDate}
+            minDate={formattedCurrentDate}
+            maxDate={formattedCurrentDate}
             disabled={isSubmitting}
           />
           <RadioButtonField

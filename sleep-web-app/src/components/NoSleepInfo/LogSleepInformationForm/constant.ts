@@ -1,12 +1,19 @@
+import { startOfDay, endOfDay, format, subDays } from "date-fns";
 import { SleepQuality, sleepQualityLabels } from "../../../enums";
 import { IOption } from "../../../types";
 import { LogSleepInformationFormFields } from "./types";
 
-export const initialValues = {
-  [LogSleepInformationFormFields.BED_TIME_START]: "",
-  [LogSleepInformationFormFields.BED_TIME_END]: "",
+export const getDefaultValues = () => ({
+  [LogSleepInformationFormFields.BED_TIME_START]: format(
+    endOfDay(subDays(new Date(), 1)),
+    "yyyy-MM-dd'T'HH:mm"
+  ),
+  [LogSleepInformationFormFields.BED_TIME_END]: format(
+    startOfDay(new Date()),
+    "yyyy-MM-dd'T'HH:mm"
+  ),
   [LogSleepInformationFormFields.FEELING]: SleepQuality.Ok.toString()
-};
+});
 
 export const FEELING_OPTIONS: IOption[] = [
   {

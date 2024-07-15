@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import { ISleepData } from "../store/sleep/types";
+import { ISleepData, ILast30NightsSleepData } from "../store/sleep/types";
 import { axiosInstance } from "./axios";
 
 class SleepService {
@@ -9,6 +9,14 @@ class SleepService {
     const response = await axiosInstance.get(`${this.baseUrl}/sleep-log`, {
       params: { date: format(new Date(), "yyyy-MM-dd") }
     });
+
+    return response.data;
+  }
+
+  async getLast30NightsSleepData(): Promise<ILast30NightsSleepData | null> {
+    const response = await axiosInstance.get(
+      `${this.baseUrl}/sleep-log/last-30-days`
+    );
 
     return response.data;
   }
