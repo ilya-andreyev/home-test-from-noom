@@ -10,7 +10,7 @@ export const getLastNightSleep = createAsyncThunk<
   void,
   { state: RootState }
 >("lastNightSleep/getData", async (_, { dispatch }) => {
-  dispatch(sleepActions.setIsLoading(true));
+  dispatch(sleepActions.setLastNightSleepDataIsLoading(true));
 
   try {
     const lastNightSleepData = await sleepService.getLastNightSleepData();
@@ -19,7 +19,25 @@ export const getLastNightSleep = createAsyncThunk<
   } catch (error: any) {
     notifyError(error?.message);
   } finally {
-    dispatch(sleepActions.setIsLoading(false));
+    dispatch(sleepActions.setLastNightSleepDataIsLoading(false));
+  }
+});
+
+export const getLast30NightsSleep = createAsyncThunk<
+  void,
+  void,
+  { state: RootState }
+>("sleep/saveData", async (_, { dispatch }) => {
+  dispatch(sleepActions.setLast30NightsSleepDataIsLoading(true));
+
+  try {
+    const last30NightsSleepData = await sleepService.getLast30NightsSleepData();
+
+    dispatch(sleepActions.setLast30NightsSleepData(last30NightsSleepData));
+  } catch (error: any) {
+    notifyError(error?.message);
+  } finally {
+    dispatch(sleepActions.setLast30NightsSleepDataIsLoading(false));
   }
 });
 

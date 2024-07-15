@@ -1,20 +1,19 @@
-import { format, intervalToDuration, formatDuration } from "date-fns";
+import { format, parseISO, intervalToDuration, formatDuration } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
-import { ISO8601String } from "../types";
 
-export const formatDate = (date: ISO8601String, dateFormat: string) => {
-  const dateInTimeZone = toZonedTime(date, "UTC");
+export const formatDate = (date: string, dateFormat: string) => {
+  const zonedTime = toZonedTime(parseISO(date), "UTC");
 
-  return format(dateInTimeZone, dateFormat);
+  return format(zonedTime, dateFormat);
 };
 
-export const getDuration = (start: ISO8601String, end: ISO8601String) => {
+export const getDuration = (start: string | number, end: string | number) => {
   const duration = intervalToDuration({ start, end });
 
   return formatDuration(duration, {
-    format: ["months", "days", "hours", "minutes"]
+    format: ["months", "days", "hours", "minutes", "seconds"]
   });
 };
 
-export const getInterval = (start: ISO8601String, end: ISO8601String) =>
+export const getInterval = (start: string, end: string) =>
   `${formatDate(start, "h:mm aaa")} - ${formatDate(end, "h:mm aaa")}`;

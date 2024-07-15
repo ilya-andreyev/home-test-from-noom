@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { initialState } from "./constants";
-import { ISleepData } from "./types";
+import { ISleepData, ILast30NightsSleepData } from "./types";
 
 export const sleepSlice = createSlice({
   name: "sleep",
@@ -13,8 +13,20 @@ export const sleepSlice = createSlice({
     ) => {
       state.lastNightSleepData = action.payload;
     },
-    setIsLoading: (state, action: PayloadAction<boolean>) => {
-      state.isLoading = action.payload;
+    setLast30NightsSleepData: (
+      state,
+      action: PayloadAction<ILast30NightsSleepData | null>
+    ) => {
+      state.last30NightsSleepData = action.payload;
+    },
+    setLastNightSleepDataIsLoading: (state, action: PayloadAction<boolean>) => {
+      state.lastNightSleepDataIsLoading = action.payload;
+    },
+    setLast30NightsSleepDataIsLoading: (
+      state,
+      action: PayloadAction<boolean>
+    ) => {
+      state.last30NightsSleepDataIsLoading = action.payload;
     },
     reset: () => {
       return { ...initialState };

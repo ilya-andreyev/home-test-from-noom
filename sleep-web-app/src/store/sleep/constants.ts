@@ -2,5 +2,7 @@ import { ISleepSlice } from "./types";
 
 export const initialState: ISleepSlice = {
   lastNightSleepData: null,
-  isLoading: false
+  last30NightsSleepData: null,
+  lastNightSleepDataIsLoading: false,
+  last30NightsSleepDataIsLoading: false
 };

@@ -4,12 +4,13 @@ import { SleepWidget } from "../SleepWidget";
 import { Modal } from "../Modal";
 import { LogSleepInformationForm } from "./LogSleepInformationForm";
 
-export function NoSleepInformation() {
+export function NoSleepInfo() {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <SleepWidget>
       <Flex
+        p={4}
         direction="column"
         justifyContent="center"
         alignItems="center"
